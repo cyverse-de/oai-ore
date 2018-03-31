@@ -1,6 +1,9 @@
 (ns org.cyverse.oai-ore
   (:use [clojure.data.xml :only [alias-uri element]]))
 
+(defprotocol RdfSerializable
+  (to-rdf [_] "Serializes the object as RDF/XML."))
+
 (def ^:private namespaces
   {:dc      "http://purl.org/dc/elements/1.1/"
    :dcterms "http://purl.org/dc/terms/"
@@ -12,33 +15,35 @@
 
 (apply alias-uri (apply concat namespaces))
 
+(defn- aggregates-element [file-uri]
+  (element ::ore/aggregates {::rdf/resource file-uri}))
+
 (deftype Aggregation [uri file-uris avus]
   RdfSerializable
-  (to-rdf []
+  (to-rdf [_]
     (element ::rdf/Description {::rdf/about uri}
       (concat [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/Aggregation"})]
               (mapv aggregates-element file-uris)))))
 
-(defn- aggregates-element [file-url]
-  (element ::ore/aggregates {::rdf/resource file-url}))
+(deftype Archive [archive-uri aggregation-uri]
+  RdfSerializable
+  (to-rdf [_]
+    (element ::rdf/Description {::rdf/about archive-uri}
+      [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/ResourceMap"})
+       (element ::ore/describes {::rdf/resource aggregation-uri})])))
 
-(defn- aggregation-description [aggregation-url file-urls]
-  (element ::rdf/Description {::rdf/about aggregation-url}
-    (concat [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/Aggregation"})]
-            (mapv aggregates-element file-urls))))
+(deftype ArchivedFile [file-uri]
+  RdfSerializable
+  (to-rdf [_]
+    (element ::rdf/Description {::rdf/about file-uri})))
 
-(defn- archive-description [archive-url aggregation-url]
-  (element ::rdf/Description {::rdf/about archive-url}
-    [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/ResourceMap"})
-     (element ::ore/describes {::rdf/resource aggregation-url})]))
+(deftype Ore [descriptions]
+  RdfSerializable
+  (to-rdf [_]
+    (element ::rdf/RDF (into {} (map (fn [[k v]] [(keyword "xmlns" (name k)) v]) namespaces))
+      (mapv to-rdf descriptions))))
 
-(defn- file-description [file-url]
-  (element ::rdf/Description {::rdf/about file-url}))
-
-(defn generate-ore [aggregation-url archive-url file-urls]
-  (element ::rdf/RDF (into {} (map (fn [[k v]] [(keyword "xmlns" (name k)) v]) namespaces))
-    (concat [(aggregation-description aggregation-url file-urls)
-             (archive-description archive-url aggregation-url)]
-            (mapv file-description file-urls))))
-
-(defn aggregation [aggregation-url file-urls])
+(defn build-ore [aggregation-uri archive-uri file-uris & [avus]]
+  (Ore. (concat [(Aggregation. aggregation-uri file-uris avus)
+                 (Archive. archive-uri aggregation-uri)]
+                (mapv (fn [file-uri] (ArchivedFile. file-uri)) file-uris))))
