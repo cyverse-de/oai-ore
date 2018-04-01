@@ -6,6 +6,7 @@
 
 (def ^:private agg-uri "http://foo.org")
 (def ^:private arch-uri "http://foo.org/bar.xml")
+(def ^:private file-uris ["http://foo.org/bar1.txt" "http://foo.org/bar2.txt"])
 
 ;; Comparing generated XML to parsed XML requires us to serialize and parse the generated XML.
 (defn- test-ore [ore filename]
@@ -13,5 +14,9 @@
          (xml/parse (io/reader (io/resource filename))))))
 
 (deftest test-empty-ore
-  (testing "Empty ORE files."
+  (testing "Empty ORE."
     (test-ore (build-ore agg-uri arch-uri []) "empty-ore.rdf")))
+
+(deftest test-ore-with-files
+  (testing "ORE with files."
+    (test-ore (build-ore agg-uri arch-uri file-uris) "ore-with-files.rdf")))
