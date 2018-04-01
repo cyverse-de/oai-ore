@@ -18,17 +18,28 @@
 ;; Alias the namespaces so that they can easily be used when generating the XML.
 (apply alias-uri (apply concat namespaces))
 
+;; A table that associates datacite terms with attribute names.
+(def ^:private tag-for
+  {"datacite.title" ::dc/title})
+
 (defn- aggregates-element
   "Gnereates an RDF/XML element indicating that a file is contained within an aggregation."
   [file-uri]
   (element ::ore/aggregates {::rdf/resource file-uri}))
+
+(defn- element-for
+  "Generates an RDF/XML element for an AVU."
+  [{:keys [attr value]}]
+  (when-let [tag (tag-for attr)]
+    (element tag {} value)))
 
 (deftype Aggregation [uri file-uris avus]
   RdfSerializable
   (to-rdf [_]
     (element ::rdf/Description {::rdf/about uri}
       (concat [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/Aggregation"})]
-              (mapv aggregates-element file-uris)))))
+              (mapv aggregates-element file-uris)
+              (doall (remove nil? (map element-for avus)))))))
 
 (deftype Archive [uri aggregation-uri]
   RdfSerializable
