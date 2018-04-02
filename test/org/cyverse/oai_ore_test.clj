@@ -85,3 +85,11 @@
     (test-ore "ore-with-description.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "Description" :value "The Description"}
                                                      {:attr "datacite.foo" :value "Bar"}]))))
+
+(deftest test-ore-with-identifier
+  (testing "ORE with identifier."
+    (test-ore "ore-with-identifier.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "Identifier" :value "The Identifier"}]))
+    (test-ore "ore-with-identifier.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "Identifier" :value "The Identifier"}
+                                                     {:attr "datacite.foo" :value "Bar"}]))))

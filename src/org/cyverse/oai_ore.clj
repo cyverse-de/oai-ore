@@ -27,7 +27,8 @@
    "contributorName"       ::dc/contributor
    "Subject"               ::dc/subject
    "Rights"                ::dc/rights
-   "Description"           ::dc/description})
+   "Description"           ::dc/description
+   "Identifier"            ::dc/identifier})
 
 (defn- aggregates-element
   "Gnereates an RDF/XML element indicating that a file is contained within an aggregation."
