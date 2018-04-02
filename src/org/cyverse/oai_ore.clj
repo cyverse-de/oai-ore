@@ -20,7 +20,8 @@
 
 ;; A table that associates datacite terms with attribute names.
 (def ^:private tag-for
-  {"datacite.title" ::dc/title})
+  {"datacite.title"     ::dc/title
+   "datacite.publisher" ::dc/publisher})
 
 (defn- aggregates-element
   "Gnereates an RDF/XML element indicating that a file is contained within an aggregation."

@@ -29,3 +29,11 @@
     (test-ore "ore-with-title.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "datacite.title" :value "The Title"}
                                                      {:attr "datacite.foo" :value "Bar"}]))))
+
+(deftest test-ore-with-publisher
+  (testing "ORE with title."
+    (test-ore "ore-with-publisher.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "datacite.publisher" :value "The Publisher"}]))
+    (test-ore "ore-with-publisher.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "datacite.publisher" :value "The Publisher"}
+                                                     {:attr "datacite.foo" :value "Bar"}]))))
