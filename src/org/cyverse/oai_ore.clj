@@ -18,17 +18,22 @@
 ;; Alias the namespaces so that they can easily be used when generating the XML.
 (apply alias-uri (apply concat namespaces))
 
+(defn- default-attribute-formatter
+  "Returns a default attribute formatter for the given XML tag."
+  [tag]
+  (fn [content] (element tag {} content)))
+
 ;; A table that associates datacite terms with attribute names.
-(def ^:private tag-for
-  {"datacite.title"        ::dc/title
-   "datacite.publisher"    ::dc/publisher
-   "datacite.creator"      ::dc/creator
-   "datacite.resourcetype" ::dc/type
-   "contributorName"       ::dc/contributor
-   "Subject"               ::dc/subject
-   "Rights"                ::dc/rights
-   "Description"           ::dc/description
-   "Identifier"            ::dc/identifier})
+(def ^:private attribute-formatter-for
+  {"datacite.title"        (default-attribute-formatter ::dc/title)
+   "datacite.publisher"    (default-attribute-formatter ::dc/publisher)
+   "datacite.creator"      (default-attribute-formatter ::dc/creator)
+   "datacite.resourcetype" (default-attribute-formatter ::dc/type)
+   "contributorName"       (default-attribute-formatter ::dc/contributor)
+   "Subject"               (default-attribute-formatter ::dc/subject)
+   "Rights"                (default-attribute-formatter ::dc/rights)
+   "Description"           (default-attribute-formatter ::dc/description)
+   "Identifier"            (default-attribute-formatter ::dc/identifier)})
 
 (defn- aggregates-element
   "Gnereates an RDF/XML element indicating that a file is contained within an aggregation."
@@ -38,8 +43,8 @@
 (defn- element-for
   "Generates an RDF/XML element for an AVU."
   [{:keys [attr value]}]
-  (when-let [tag (tag-for attr)]
-    (element tag {} value)))
+  (when-let [formatter (attribute-formatter-for attr)]
+    (formatter value)))
 
 (deftype Aggregation [uri file-uris avus]
   RdfSerializable
