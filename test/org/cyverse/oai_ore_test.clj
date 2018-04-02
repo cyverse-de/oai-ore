@@ -69,3 +69,11 @@
     (test-ore "ore-with-subject.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "Subject" :value "The Subject"}
                                                      {:attr "datacite.foo" :value "Bar"}]))))
+
+(deftest test-ore-with-rights
+  (testing "ORE with rights."
+    (test-ore "ore-with-rights.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "Rights" :value "The Rights"}]))
+    (test-ore "ore-with-rights.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "Rights" :value "The Rights"}
+                                                     {:attr "datacite.foo" :value "Bar"}]))))
