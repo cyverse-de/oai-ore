@@ -53,3 +53,11 @@
     (test-ore "ore-with-type.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "datacite.resourcetype" :value "The Type"}
                                                      {:attr "datacite.foo" :value "Bar"}]))))
+
+(deftest test-ore-with-contributor
+  (testing "ORE with title."
+    (test-ore "ore-with-contributor.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "contributorName" :value "The Contributor"}]))
+    (test-ore "ore-with-contributor.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "contributorName" :value "The Contributor"}
+                                                     {:attr "datacite.foo" :value "Bar"}]))))
