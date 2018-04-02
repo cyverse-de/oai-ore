@@ -26,7 +26,8 @@
    "datacite.resourcetype" ::dc/type
    "contributorName"       ::dc/contributor
    "Subject"               ::dc/subject
-   "Rights"                ::dc/rights})
+   "Rights"                ::dc/rights
+   "Description"           ::dc/description})
 
 (defn- aggregates-element
   "Gnereates an RDF/XML element indicating that a file is contained within an aggregation."
