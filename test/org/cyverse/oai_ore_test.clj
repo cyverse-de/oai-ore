@@ -31,15 +31,15 @@
                                                      {:attr "datacite.foo" :value "Bar"}]))))
 
 (deftest test-ore-with-publisher
-  (testing "ORE with title."
+  (testing "ORE with publisher."
     (test-ore "ore-with-publisher.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "datacite.publisher" :value "The Publisher"}]))
     (test-ore "ore-with-publisher.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "datacite.publisher" :value "The Publisher"}
                                                      {:attr "datacite.foo" :value "Bar"}]))))
 
-(deftest test-ore-with-publisher
-  (testing "ORE with title."
+(deftest test-ore-with-creator
+  (testing "ORE with creator."
     (test-ore "ore-with-creator.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "datacite.creator" :value "The Creator"}]))
     (test-ore "ore-with-creator.rdf"
@@ -47,7 +47,7 @@
                                                      {:attr "datacite.foo" :value "Bar"}]))))
 
 (deftest test-ore-with-type
-  (testing "ORE with title."
+  (testing "ORE with type."
     (test-ore "ore-with-type.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "datacite.resourcetype" :value "The Type"}]))
     (test-ore "ore-with-type.rdf"
@@ -55,9 +55,17 @@
                                                      {:attr "datacite.foo" :value "Bar"}]))))
 
 (deftest test-ore-with-contributor
-  (testing "ORE with title."
+  (testing "ORE with contributor"
     (test-ore "ore-with-contributor.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "contributorName" :value "The Contributor"}]))
     (test-ore "ore-with-contributor.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "contributorName" :value "The Contributor"}
+                                                     {:attr "datacite.foo" :value "Bar"}]))))
+
+(deftest test-ore-with-subject
+  (testing "ORE with subject."
+    (test-ore "ore-with-subject.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "Subject" :value "The Subject"}]))
+    (test-ore "ore-with-subject.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "Subject" :value "The Subject"}
                                                      {:attr "datacite.foo" :value "Bar"}]))))
