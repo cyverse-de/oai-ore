@@ -1,5 +1,6 @@
 (ns org.cyverse.oai-ore
-  (:use [clojure.data.xml :only [alias-uri element]]))
+  (:use [clojure.data.xml :only [alias-uri element]])
+  (:require [clojure.string :as string]))
 
 (defprotocol RdfSerializable
   (to-rdf [_] "Serializes the object as RDF/XML. This function returns an instance of clojure.data.xml.Element."))
@@ -51,8 +52,9 @@
 (defn- element-for
   "Generates an RDF/XML element for an AVU."
   [{:keys [attr value]}]
-  (when-let [formatter (attribute-formatter-for attr)]
-    (formatter value)))
+  (when-not (string/blank? value)
+    (when-let [formatter (attribute-formatter-for attr)]
+      (formatter value))))
 
 (deftype Aggregation [uri file-uris avus]
   RdfSerializable
