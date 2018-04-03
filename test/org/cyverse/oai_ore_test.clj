@@ -101,3 +101,11 @@
     (test-ore "ore-with-box.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "geoLocationBox" :value "The Box"}
                                                      {:attr "datacite.foo" :value "Bar"}]))))
+
+(deftest test-ore-with-location
+  (testing "ORE with location."
+    (test-ore "ore-with-location.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "geoLocationPlace" :value "The Place"}]))
+    (test-ore "ore-with-location.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "geoLocationPlace" :value "The Place"}
+                                                     {:attr "datacite.foo" :value "Bar"}]))))
