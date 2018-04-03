@@ -1,4 +1,4 @@
-(defproject org.cyverse/oai-ore "0.1.0-SNAPSHOT"
+(defproject org.cyverse/oai-ore "1.0.0-SNAPSHOT"
   :description "Library for generating OAI-ORE files."
   :url "https://github.com/cyverse-de/oai-ore"
   :license {:name "BSD"
