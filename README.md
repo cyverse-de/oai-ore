@@ -8,7 +8,7 @@ attribute metdata stored in the CyVerse Data Store.
 
 All examples assume that these commands have been executed in the REPL:
 
-```
+``` clojure
 (require '[org.cyverse.oai-ore :as ore])
 (require '[clojure.data.xml :refer :all])
 (def agg-uri "http://foo.org")
@@ -20,13 +20,13 @@ The suggested way to build an OAI-ORE file is to use the `build-ore` function. T
 instance of `org.cyverse.oai-ore.Ore`, which can then be converted to RDF/XML and serialized. The simplest such file is
 an empty archive:
 
-```
+``` clojure
 (def empty-ore (ore/build-ore agg-uri arch-uri []))
 ```
 
 Once you have the `org.cyverse.oai-ore.Ore` instance, you can convert it to RDF/XML by calling its `to-rdf` method:
 
-```
+``` clojure
 (def rdf (ore/to-rdf empty-ore))
 ```
 
@@ -34,14 +34,14 @@ The result of calling this method is an instance of `clojure.data.xml.Element`, 
 serialization method available in `org.clojure/data.xml`. For example, you can use the following commands to emit
 pretty-printed RDF/XML:
 
-```
+``` clojure
 (print (indent-str rdf))
 ```
 
 An empty OAI-ORE file is good for an example, but not very useful. It's possible to add aggregated entites by including
 URIs in the third argument to `build-ore`:
 
-```
+``` clojure
 (def populated-ore (ore/build-ore agg-uri arch-uri file-uris))
 ```
 
@@ -66,7 +66,7 @@ Data Commons repository. The following attributes are currently supported:
 Any attribute that is associated with the data set that is not in this list is ignored. Similarly, any attribute that is
 in the list but either contains an empty value or is not associated with the data set is ignored:
 
-```
+``` clojure
 (def attr-ore (ore/build-ore agg-uri arch-uri file-uris [{:attr "datacite.title" :value "The Title"}
                                                          {:attr "datacite.creator" :value "The Creator"}
                                                          {:attr "ignored.attribute" :value "Who Cares?"}
