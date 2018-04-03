@@ -23,6 +23,11 @@
   [tag]
   (fn [content] (element tag {} content)))
 
+(defn- default-dcterm-attribute-formatter
+  "Returns a default formatter for dcterm attributes."
+  [tag parse-type]
+  (fn [content] (element tag {::rdf/parseType parse-type} content)))
+
 ;; A table that associates datacite terms with attribute names.
 (def ^:private attribute-formatter-for
   {"datacite.title"        (default-attribute-formatter ::dc/title)
@@ -33,7 +38,8 @@
    "Subject"               (default-attribute-formatter ::dc/subject)
    "Rights"                (default-attribute-formatter ::dc/rights)
    "Description"           (default-attribute-formatter ::dc/description)
-   "Identifier"            (default-attribute-formatter ::dc/identifier)})
+   "Identifier"            (default-attribute-formatter ::dc/identifier)
+   "geoLocationBox"        (default-dcterm-attribute-formatter ::dcterms/Box "Literal")})
 
 (defn- aggregates-element
   "Gnereates an RDF/XML element indicating that a file is contained within an aggregation."

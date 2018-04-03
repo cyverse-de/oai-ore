@@ -93,3 +93,11 @@
     (test-ore "ore-with-identifier.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "Identifier" :value "The Identifier"}
                                                      {:attr "datacite.foo" :value "Bar"}]))))
+
+(deftest test-ore-with-box
+  (testing "ORE with box."
+    (test-ore "ore-with-box.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "geoLocationBox" :value "The Box"}]))
+    (test-ore "ore-with-box.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "geoLocationBox" :value "The Box"}
+                                                     {:attr "datacite.foo" :value "Bar"}]))))
