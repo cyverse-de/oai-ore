@@ -40,7 +40,8 @@
    "Description"           (default-attribute-formatter ::dc/description)
    "Identifier"            (default-attribute-formatter ::dc/identifier)
    "geoLocationBox"        (default-dcterm-attribute-formatter ::dcterms/Box "Literal")
-   "geoLocationPlace"      (default-dcterm-attribute-formatter ::dcterms/Location "Literal")})
+   "geoLocationPlace"      (default-dcterm-attribute-formatter ::dcterms/Location "Literal")
+   "geoLocationPoint"      (default-dcterm-attribute-formatter ::dcterms/Point "Literal")})
 
 (defn- aggregates-element
   "Gnereates an RDF/XML element indicating that a file is contained within an aggregation."

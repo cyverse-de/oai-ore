@@ -109,3 +109,11 @@
     (test-ore "ore-with-location.rdf"
               (build-ore agg-uri arch-uri file-uris [{:attr "geoLocationPlace" :value "The Place"}
                                                      {:attr "datacite.foo" :value "Bar"}]))))
+
+(deftest test-ore-with-point
+  (testing "ORE with point."
+    (test-ore "ore-with-point.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "geoLocationPoint" :value "The Point"}]))
+    (test-ore "ore-with-point.rdf"
+              (build-ore agg-uri arch-uri file-uris [{:attr "geoLocationPoint" :value "The Point"}
+                                                     {:attr "datacite.foo" :value "Bar"}]))))
