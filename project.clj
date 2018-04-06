@@ -3,6 +3,7 @@
   :url "https://github.com/cyverse-de/oai-ore"
   :license {:name "BSD"
             :url "http://www.cyverse.org/license"}
+  :plugins [[test2junit "1.2.2"]]
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/data.xml "0.2.0-alpha5"]]
   :profiles {:dev {:resource-paths ["test-resources"]}})
