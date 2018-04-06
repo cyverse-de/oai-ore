@@ -11,4 +11,4 @@ of [keepachangelog.com](http://keepachangelog.com/).
 - Ore type.
 - build-ore
 
-[1.0.0]: https://github.com/your-name/oai-ore/compare/e3198afdbfd66d947e4285b582b80545c7654737...1.0.0
+[1.0.0]: https://github.com/cyverse-de/oai-ore/compare/e3198afdbfd66d947e4285b582b80545c7654737...1.0.0
