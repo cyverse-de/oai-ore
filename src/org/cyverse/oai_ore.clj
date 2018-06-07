@@ -88,3 +88,5 @@
   (Ore. (concat [(Aggregation. aggregation-uri file-uris avus)
                  (Archive. archive-uri aggregation-uri)]
                 (mapv (fn [file-uri] (ArchivedFile. file-uri)) file-uris))))
+
+(def format-id "http://www.openarchives.org/ore/terms")
