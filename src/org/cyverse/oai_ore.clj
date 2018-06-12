@@ -39,7 +39,7 @@
    "Subject"               (default-attribute-formatter ::dc/subject)
    "Rights"                (default-attribute-formatter ::dc/rights)
    "Description"           (default-attribute-formatter ::dc/description)
-   "Identifier"            (default-attribute-formatter ::dc/identifier)
+   "Identifier"            (default-attribute-formatter ::dcterms/identifier)
    "geoLocationBox"        (default-dcterm-attribute-formatter ::dcterms/Box "Literal")
    "geoLocationPlace"      (default-dcterm-attribute-formatter ::dcterms/Location "Literal")
    "geoLocationPoint"      (default-dcterm-attribute-formatter ::dcterms/Point "Literal")})
