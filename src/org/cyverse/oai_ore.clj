@@ -64,11 +64,12 @@
               (mapv aggregates-element file-uris)
               (doall (remove nil? (map element-for avus)))))))
 
-(deftype Archive [uri aggregation-uri]
+(deftype Archive [id uri aggregation-uri]
   RdfSerializable
   (to-rdf [_]
     (element ::rdf/Description {::rdf/about uri}
-      [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/ResourceMap"})
+      [(element ::dcterms/identifier {} id)
+       (element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/ResourceMap"})
        (element ::ore/describes {::rdf/resource aggregation-uri})])))
 
 (deftype ArchivedFile [id file-uri]
@@ -85,9 +86,9 @@
 
 (defn build-ore
   "Generates an ORE archive for a data set."
-  [aggregation-uri archive-uri archived-files & [avus]]
+  [aggregation-uri archive archived-files & [avus]]
   (Ore. (concat [(Aggregation. aggregation-uri (mapv :uri archived-files) avus)
-                 (Archive. archive-uri aggregation-uri)]
+                 (Archive. (:id archive) (:uri archive) aggregation-uri)]
                 (mapv (fn [{:keys [id uri]}] (ArchivedFile. id uri)) archived-files))))
 
 (def format-id "http://www.openarchives.org/ore/terms")
