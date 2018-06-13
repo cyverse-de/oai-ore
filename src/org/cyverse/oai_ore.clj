@@ -74,7 +74,8 @@
 (deftype ArchivedFile [id file-uri]
   RdfSerializable
   (to-rdf [_]
-    (element ::rdf/Description {::rdf/about file-uri})))
+    (element ::rdf/Description {::rdf/about file-uri}
+      [(element ::dcterms/identifier {} id)])))
 
 (deftype Ore [descriptions]
   RdfSerializable
