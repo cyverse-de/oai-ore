@@ -71,7 +71,7 @@
       [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/ResourceMap"})
        (element ::ore/describes {::rdf/resource aggregation-uri})])))
 
-(deftype ArchivedFile [file-uri]
+(deftype ArchivedFile [id file-uri]
   RdfSerializable
   (to-rdf [_]
     (element ::rdf/Description {::rdf/about file-uri})))
@@ -84,9 +84,9 @@
 
 (defn build-ore
   "Generates an ORE archive for a data set."
-  [aggregation-uri archive-uri file-uris & [avus]]
-  (Ore. (concat [(Aggregation. aggregation-uri file-uris avus)
+  [aggregation-uri archive-uri archived-files & [avus]]
+  (Ore. (concat [(Aggregation. aggregation-uri (mapv :uri archived-files) avus)
                  (Archive. archive-uri aggregation-uri)]
-                (mapv (fn [file-uri] (ArchivedFile. file-uri)) file-uris))))
+                (mapv (fn [{:keys [id uri]}] (ArchivedFile. id uri)) archived-files))))
 
 (def format-id "http://www.openarchives.org/ore/terms")
