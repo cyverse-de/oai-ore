@@ -54,7 +54,7 @@
   [{:keys [attr value]}]
   (when-not (string/blank? value)
     (when-let [formatter (attribute-formatter-for attr)]
-      (formatter value))))
+      (formatter (string/trim value)))))
 
 (deftype Aggregation [uri file-uris avus]
   RdfSerializable
