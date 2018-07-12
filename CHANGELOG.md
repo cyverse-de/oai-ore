@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file. This change
 of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- A new arity for build-ore.
 
 ## [1.0.2]
 ### Changed

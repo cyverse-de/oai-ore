@@ -86,7 +86,7 @@
 
 (defn build-ore
   "Generates an ORE archive for a data set."
-  [aggregation-uri archive archived-files & [avus]]
+  [aggregation-uri archive archived-files & [avus metadata]]
   (Ore. (concat [(Aggregation. aggregation-uri (mapv :uri archived-files) avus)
                  (Archive. (:id archive) (:uri archive) aggregation-uri)]
                 (mapv (fn [{:keys [id uri]}] (ArchivedFile. id uri)) archived-files))))

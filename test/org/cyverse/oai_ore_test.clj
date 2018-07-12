@@ -21,7 +21,7 @@
 
 (deftest test-empty-ore
   (testing "Empty ORE."
-    (test-ore "empty-ore.rdf" (build-ore agg-uri arch []))
+   (test-ore "empty-ore.rdf" (build-ore agg-uri arch []))
     (test-ore "empty-ore.rdf" (build-ore agg-uri arch [] [{:attr "datacite.title" :value ""}]))))
 
 (deftest test-ore-with-files
