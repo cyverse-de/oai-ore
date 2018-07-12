@@ -90,6 +90,7 @@ Serializing the RDF using `(print (indent-str (ore/to-rdf attr-ore)))` should pr
          xmlns:cito="http://purl.org/spar/cito/">
   <rdf:Description rdf:about="http://foo.org">
     <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/Aggregation"/>
+    <ore:aggregates rdf:resource="http://foo.org/baz"/>
     <ore:aggregates rdf:resource="http://foo.org/bar1"/>
     <ore:aggregates rdf:resource="http://foo.org/bar2"/>
     <dc:title>The Title</dc:title>

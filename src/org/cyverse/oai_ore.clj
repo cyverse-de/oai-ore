@@ -48,7 +48,7 @@
 (defn- aggregates-element
   "Gnereates an RDF/XML element indicating that a file is contained within an aggregation."
   [file-uri]
-  (element ::ore/aggregates {::rdf/resource file-uri}))
+  (when file-uri (element ::ore/aggregates {::rdf/resource file-uri})))
 
 (defn- element-for
   "Generates an RDF/XML element for an AVU."
@@ -57,13 +57,15 @@
     (when-let [formatter (attribute-formatter-for attr)]
       (formatter (string/trim value)))))
 
-(deftype Aggregation [uri file-uris avus]
+(deftype Aggregation [uri file-uris avus meta-uri]
   RdfSerializable
   (to-rdf [_]
     (element ::rdf/Description {::rdf/about uri}
-      (concat [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/Aggregation"})]
-              (mapv aggregates-element file-uris)
-              (doall (remove nil? (map element-for avus)))))))
+      (->> (concat [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/Aggregation"})]
+                   (mapv aggregates-element (concat [meta-uri] file-uris))
+                   (map element-for avus))
+           (remove nil?)
+           doall))))
 
 (deftype Archive [id uri aggregation-uri]
   RdfSerializable
@@ -96,7 +98,7 @@
 (defn build-ore
   "Generates an ORE archive for a data set."
   [aggregation-uri archive archived-files & [avus metadata]]
-  (Ore. (concat (remove nil? [(Aggregation. aggregation-uri (mapv :uri archived-files) avus)
+  (Ore. (concat (remove nil? [(Aggregation. aggregation-uri (mapv :uri archived-files) avus (:uri metadata))
                               (Archive. (:id archive) (:uri archive) aggregation-uri)
                               (when metadata (MetadataFile. (:id metadata) (:uri metadata) archived-files))])
                 (mapv (fn [{:keys [id uri]}] (ArchivedFile. id uri (:uri metadata))) archived-files))))
