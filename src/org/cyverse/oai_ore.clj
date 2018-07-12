@@ -8,7 +8,8 @@
 ;; These are the namespaces that may be used in the the RDF serialization of the archive. The key is the abbreviation
 ;; as it should appear in the serialized XML. The value is the namespace URI.
 (def ^:private namespaces
-  {:dc      "http://purl.org/dc/elements/1.1/"
+  {:cito    "http://purl.org/spar/cito/"
+   :dc      "http://purl.org/dc/elements/1.1/"
    :dcterms "http://purl.org/dc/terms/"
    :foaf    "http://xmlns.com/foaf/0.1/"
    :ore     "http://www.openarchives.org/ore/terms/"
@@ -72,11 +73,17 @@
        (element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/ResourceMap"})
        (element ::ore/describes {::rdf/resource aggregation-uri})])))
 
-(deftype ArchivedFile [id file-uri]
+(deftype MetadataFile [id meta-uri file-uris]
+  RdfSerializable
+  (to-rdf [_]
+    (element ::rdf/Description {::rdf/about meta-uri}
+      (concat [(element ::dcterms/identifier {} id)]))))
+
+(deftype ArchivedFile [id file-uri meta-uri]
   RdfSerializable
   (to-rdf [_]
     (element ::rdf/Description {::rdf/about file-uri}
-      [(element ::dcterms/identifier {} id)])))
+      (remove nil? [(element ::dcterms/identifier {} id)]))))
 
 (deftype Ore [descriptions]
   RdfSerializable
@@ -87,8 +94,9 @@
 (defn build-ore
   "Generates an ORE archive for a data set."
   [aggregation-uri archive archived-files & [avus metadata]]
-  (Ore. (concat [(Aggregation. aggregation-uri (mapv :uri archived-files) avus)
-                 (Archive. (:id archive) (:uri archive) aggregation-uri)]
-                (mapv (fn [{:keys [id uri]}] (ArchivedFile. id uri)) archived-files))))
+  (Ore. (concat (remove nil? [(Aggregation. aggregation-uri (mapv :uri archived-files) avus)
+                              (Archive. (:id archive) (:uri archive) aggregation-uri)
+                              (when metadata (MetadataFile. (:id metadata) (:uri metadata) nil))])
+                (mapv (fn [{:keys [id uri]}] (ArchivedFile. id uri (:uri metadata))) archived-files))))
 
 (def format-id "http://www.openarchives.org/ore/terms")

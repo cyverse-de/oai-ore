@@ -11,6 +11,7 @@
 ;; URIs to use when building test OREs.
 (def ^:private agg-uri "http://foo.org")
 (def ^:private arch (file-info-from-id "6cf74bf2-f172-47b4-94cc-acfc82559fc6"))
+(def ^:private metadata (file-info-from-id "d0b7aa9a-1c22-4a59-9b04-3f35f3a9e15d"))
 (def ^:private archived-files
   (mapv file-info-from-id ["73cd1d79-28c9-4a52-9060-cf9c65905922" "6772f358-9c10-4fa0-9fec-1376816b37e4"]))
 
@@ -22,7 +23,8 @@
 (deftest test-empty-ore
   (testing "Empty ORE."
    (test-ore "empty-ore.rdf" (build-ore agg-uri arch []))
-    (test-ore "empty-ore.rdf" (build-ore agg-uri arch [] [{:attr "datacite.title" :value ""}]))))
+   (test-ore "empty-ore.rdf" (build-ore agg-uri arch [] [{:attr "datacite.title" :value ""}]))
+   (test-ore "empty-ore-meta.rdf" (build-ore agg-uri arch [] [] metadata))))
 
 (deftest test-ore-with-files
   (testing "ORE with files."
