@@ -77,13 +77,15 @@
   RdfSerializable
   (to-rdf [_]
     (element ::rdf/Description {::rdf/about meta-uri}
-      (concat [(element ::dcterms/identifier {} id)]))))
+      (concat [(element ::dcterms/identifier {} id)]
+              (mapv (fn [{:keys [uri]}] (element ::cito/documents {::rdf/resource uri})) file-uris)))))
 
 (deftype ArchivedFile [id file-uri meta-uri]
   RdfSerializable
   (to-rdf [_]
     (element ::rdf/Description {::rdf/about file-uri}
-      (remove nil? [(element ::dcterms/identifier {} id)]))))
+      (remove nil? [(element ::dcterms/identifier {} id)
+                    (when meta-uri (element ::cito/isDocumentedBy {::rdf/resource meta-uri}))]))))
 
 (deftype Ore [descriptions]
   RdfSerializable
@@ -96,7 +98,7 @@
   [aggregation-uri archive archived-files & [avus metadata]]
   (Ore. (concat (remove nil? [(Aggregation. aggregation-uri (mapv :uri archived-files) avus)
                               (Archive. (:id archive) (:uri archive) aggregation-uri)
-                              (when metadata (MetadataFile. (:id metadata) (:uri metadata) nil))])
+                              (when metadata (MetadataFile. (:id metadata) (:uri metadata) archived-files))])
                 (mapv (fn [{:keys [id uri]}] (ArchivedFile. id uri (:uri metadata))) archived-files))))
 
 (def format-id "http://www.openarchives.org/ore/terms")

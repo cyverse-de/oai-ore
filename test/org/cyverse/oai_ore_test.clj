@@ -16,7 +16,10 @@
   (mapv file-info-from-id ["73cd1d79-28c9-4a52-9060-cf9c65905922" "6772f358-9c10-4fa0-9fec-1376816b37e4"]))
 
 ;; Comparing generated XML to parsed XML requires us to serialize and parse the generated XML.
-(defn- test-ore [filename ore]
+(defn- test-ore [filename ore & [debug]]
+  (when debug
+    (println "Actual:" (xml/indent-str (to-rdf ore)))
+    (println "Expected:" (xml/indent-str (xml/parse (io/reader (io/resource filename))))))
   (is (= (xml/parse (io/reader (io/resource filename)))
          (xml/parse-str (xml/emit-str (to-rdf ore))))))
 
@@ -29,7 +32,8 @@
 (deftest test-ore-with-files
   (testing "ORE with files."
     (test-ore "ore-with-files.rdf" (build-ore agg-uri arch archived-files))
-    (test-ore "ore-with-files.rdf" (build-ore agg-uri arch archived-files [{:attr "datacite.title" :value ""}]))))
+    (test-ore "ore-with-files.rdf" (build-ore agg-uri arch archived-files [{:attr "datacite.title" :value ""}]))
+    (test-ore "ore-with-files-meta.rdf" (build-ore agg-uri arch archived-files [] metadata))))
 
 (deftest test-ore-with-title
   (testing "ORE with title."
