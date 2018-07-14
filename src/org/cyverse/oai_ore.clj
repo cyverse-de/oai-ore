@@ -8,7 +8,8 @@
 ;; These are the namespaces that may be used in the the RDF serialization of the archive. The key is the abbreviation
 ;; as it should appear in the serialized XML. The value is the namespace URI.
 (def ^:private namespaces
-  {:dc      "http://purl.org/dc/elements/1.1/"
+  {:cito    "http://purl.org/spar/cito/"
+   :dc      "http://purl.org/dc/elements/1.1/"
    :dcterms "http://purl.org/dc/terms/"
    :foaf    "http://xmlns.com/foaf/0.1/"
    :ore     "http://www.openarchives.org/ore/terms/"
@@ -47,7 +48,7 @@
 (defn- aggregates-element
   "Gnereates an RDF/XML element indicating that a file is contained within an aggregation."
   [file-uri]
-  (element ::ore/aggregates {::rdf/resource file-uri}))
+  (when file-uri (element ::ore/aggregates {::rdf/resource file-uri})))
 
 (defn- element-for
   "Generates an RDF/XML element for an AVU."
@@ -56,13 +57,15 @@
     (when-let [formatter (attribute-formatter-for attr)]
       (formatter (string/trim value)))))
 
-(deftype Aggregation [uri file-uris avus]
+(deftype Aggregation [uri file-uris avus meta-uri]
   RdfSerializable
   (to-rdf [_]
     (element ::rdf/Description {::rdf/about uri}
-      (concat [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/Aggregation"})]
-              (mapv aggregates-element file-uris)
-              (doall (remove nil? (map element-for avus)))))))
+      (->> (concat [(element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/Aggregation"})]
+                   (mapv aggregates-element (concat [meta-uri] file-uris))
+                   (map element-for avus))
+           (remove nil?)
+           doall))))
 
 (deftype Archive [id uri aggregation-uri]
   RdfSerializable
@@ -72,11 +75,19 @@
        (element ::rdf/type {::rdf/resource "http://www.openarchives.org/ore/terms/ResourceMap"})
        (element ::ore/describes {::rdf/resource aggregation-uri})])))
 
-(deftype ArchivedFile [id file-uri]
+(deftype MetadataFile [id meta-uri file-uris]
+  RdfSerializable
+  (to-rdf [_]
+    (element ::rdf/Description {::rdf/about meta-uri}
+      (concat [(element ::dcterms/identifier {} id)]
+              (mapv (fn [{:keys [uri]}] (element ::cito/documents {::rdf/resource uri})) file-uris)))))
+
+(deftype ArchivedFile [id file-uri meta-uri]
   RdfSerializable
   (to-rdf [_]
     (element ::rdf/Description {::rdf/about file-uri}
-      [(element ::dcterms/identifier {} id)])))
+      (remove nil? [(element ::dcterms/identifier {} id)
+                    (when meta-uri (element ::cito/isDocumentedBy {::rdf/resource meta-uri}))]))))
 
 (deftype Ore [descriptions]
   RdfSerializable
@@ -86,9 +97,10 @@
 
 (defn build-ore
   "Generates an ORE archive for a data set."
-  [aggregation-uri archive archived-files & [avus]]
-  (Ore. (concat [(Aggregation. aggregation-uri (mapv :uri archived-files) avus)
-                 (Archive. (:id archive) (:uri archive) aggregation-uri)]
-                (mapv (fn [{:keys [id uri]}] (ArchivedFile. id uri)) archived-files))))
+  [aggregation-uri archive archived-files & [avus metadata]]
+  (Ore. (concat (remove nil? [(Aggregation. aggregation-uri (mapv :uri archived-files) avus (:uri metadata))
+                              (Archive. (:id archive) (:uri archive) aggregation-uri)
+                              (when metadata (MetadataFile. (:id metadata) (:uri metadata) archived-files))])
+                (mapv (fn [{:keys [id uri]}] (ArchivedFile. id uri (:uri metadata))) archived-files))))
 
 (def format-id "http://www.openarchives.org/ore/terms")

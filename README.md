@@ -14,6 +14,7 @@ All examples assume that these commands have been executed in the REPL:
 (require '[clojure.data.xml :refer :all])
 (def agg-uri "http://foo.org")
 (def arch (file-info-from-id "bar"))
+(def metadata (file-info-from-id "baz"))
 (def archived-files (mapv file-info-from-id ["bar1" "bar2"]))
 ```
 
@@ -71,7 +72,8 @@ in the list but either contains an empty value or is not associated with the dat
 (def attr-ore (ore/build-ore agg-uri arch archived-files [{:attr "datacite.title" :value "The Title"}
                                                           {:attr "datacite.creator" :value "The Creator"}
                                                           {:attr "ignored.attribute" :value "Who Cares?"}
-                                                          {:attr "Subject" :value ""}]))
+                                                          {:attr "Subject" :value ""}]
+                             metadata))
 ```
 
 Serializing the RDF using `(print (indent-str (ore/to-rdf attr-ore)))` should produce the following output:
@@ -84,9 +86,11 @@ Serializing the RDF using `(print (indent-str (ore/to-rdf attr-ore)))` should pr
          xmlns:dcterms="http://purl.org/dc/terms/"
          xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:ore="http://www.openarchives.org/ore/terms/"
-         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:cito="http://purl.org/spar/cito/">
   <rdf:Description rdf:about="http://foo.org">
     <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/Aggregation"/>
+    <ore:aggregates rdf:resource="http://foo.org/baz"/>
     <ore:aggregates rdf:resource="http://foo.org/bar1"/>
     <ore:aggregates rdf:resource="http://foo.org/bar2"/>
     <dc:title>The Title</dc:title>
@@ -97,11 +101,18 @@ Serializing the RDF using `(print (indent-str (ore/to-rdf attr-ore)))` should pr
     <rdf:type rdf:resource="http://www.openarchives.org/ore/terms/ResourceMap"/>
     <ore:describes rdf:resource="http://foo.org"/>
   </rdf:Description>
+  <rdf:Description rdf:about="http://foo.org/baz">
+    <dcterms:identifier>baz</dcterms:identifier>
+    <cito:documents rdf:resource="http://foo.org/bar1"/>
+    <cito:documents rdf:resource="http://foo.org/bar2"/>
+  </rdf:Description>
   <rdf:Description rdf:about="http://foo.org/bar1">
     <dcterms:identifier>bar1</dcterms:identifier>
+    <cito:isDocumentedBy rdf:resource="http://foo.org/baz"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://foo.org/bar2">
     <dcterms:identifier>bar2</dcterms:identifier>
+    <cito:isDocumentedBy rdf:resource="http://foo.org/baz"/>
   </rdf:Description>
 </rdf:RDF>
 ```

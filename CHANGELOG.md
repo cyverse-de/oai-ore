@@ -4,6 +4,11 @@ of [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [1.0.3]
+### Added
+- A new arity for build-ore.
+- Support for metadata files that are used to describe other files in a data set.
+
 ## [1.0.2]
 ### Changed
 - Replaced `dc:identifier` with `dcterms:identifier` in generated files.
@@ -23,6 +28,7 @@ of [keepachangelog.com](http://keepachangelog.com/).
 - Ore type.
 - build-ore
 
-[Unreleased]: https://github.com/cyverse-de/oai-ore/compare/1.0.2...HEAD
+[Unreleased]: https://github.com/cyverse-de/oai-ore/compare/1.0.3...HEAD
+[1.0.3]: https://github.com/cyverse-de/oai-ore/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/cyverse-de/oai-ore/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/cyverse-de/oai-ore/compare/1.0.0...1.0.1
